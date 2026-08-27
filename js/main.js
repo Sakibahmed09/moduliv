@@ -76,18 +76,19 @@
 
   /* ---------- hero house-type spec panel ---------- */
   var TYPES = [
-    { area: 40, name: '1 Bed Apartment', meta: 'Type A2 · Single storey' },
-    { area: 51, name: '1 Bed Apartment', meta: 'Type B3 · Single storey' },
-    { area: 70, name: '2 Bed Apartment', meta: 'Type D3 · Single storey' },
-    { area: 79, name: '2 Bed House', meta: 'Two storeys · 4 person' },
-    { area: 101, name: '3 Bed House', meta: 'Two storeys · 5 person' },
-    { area: 112, name: '4 Bed House', meta: 'Two storeys · 6 person' }
+    { area: 40, name: '1 Bed Apartment', meta: 'Type A2 · Single storey', plan: 't1' },
+    { area: 51, name: '1 Bed Apartment', meta: 'Type B3 · Single storey', plan: 't2' },
+    { area: 70, name: '2 Bed Apartment', meta: 'Type D3 · Single storey', plan: 't3' },
+    { area: 79, name: '2 Bed House', meta: 'Two storeys · 4 person', plan: 't4' },
+    { area: 101, name: '3 Bed House', meta: 'Two storeys · 5 person', plan: 't5' },
+    { area: 112, name: '4 Bed House', meta: 'Two storeys · 6 person', plan: 't6' }
   ];
   var tIdx = 5;
   var spec = document.querySelector('.spec');
   var elArea = document.getElementById('specArea');
   var elName = document.getElementById('specName');
   var elMeta = document.getElementById('specMeta');
+  var elPlan = document.getElementById('specPlan');
 
   function setType(next) {
     tIdx = (next + TYPES.length) % TYPES.length;
@@ -96,6 +97,8 @@
       elArea.textContent = TYPES[tIdx].area;
       elName.textContent = TYPES[tIdx].name;
       elMeta.textContent = TYPES[tIdx].meta;
+      elPlan.src = 'assets/img/plans/' + TYPES[tIdx].plan + '.jpg';
+      elPlan.alt = TYPES[tIdx].name + ' floor plan';
       spec.classList.remove('is-switching');
     }, 290);
   }
