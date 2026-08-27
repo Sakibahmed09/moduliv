@@ -7,6 +7,8 @@
 <title>Moduliv — Homes for the 98%</title>
 <meta name="description" content="NHBC-certified modular homes, engineered off-site and finished in as little as 13 weeks, for around 20% less than traditional construction. A clear path to ownership.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2712%27 fill=%27%23ff2d21%27/%3E%3Ctext x=%2732%27 y=%2744%27 font-family=%27Helvetica,Arial%27 font-size=%2734%27 font-weight=%27700%27 fill=%27%23fff8f0%27 text-anchor=%27middle%27%3EM%3C/text%3E%3C/svg%3E">
+<link rel="preload" href="assets/img/hero-d.jpg" as="image" media="(min-width: 721px)">
+<link rel="preload" href="assets/img/hero-m.jpg" as="image" media="(max-width: 720px)">
 <link rel="preload" href="assets/fonts/Zodiak-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/Switzer-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/main.css">
@@ -36,10 +38,12 @@
   <section class="hero">
     <div class="hero__media">
       <div class="hero__layer" data-plx="0.16">
-        <img src="assets/img/hero-dusk-2x.jpg" alt="A Moduliv five-bedroom home at dusk, warm light in every window" fetchpriority="high">
-        <video id="heroVideo" autoplay muted loop playsinline preload="auto" poster="assets/img/hero-dusk-2x.jpg">
-          <source src="assets/media/hero-loop.mp4" type="video/mp4">
-        </video>
+        <picture>
+          <source media="(max-width: 720px)" srcset="assets/img/hero-m.jpg">
+          <img src="assets/img/hero-d.jpg" alt="A Moduliv five-bedroom home at dusk, warm light in every window" fetchpriority="high" decoding="async">
+        </picture>
+        <video id="heroVideo" autoplay muted loop playsinline preload="none" disablepictureinpicture disableremoteplayback
+               data-mobile="assets/media/hero-loop-mobile.mp4" data-desktop="assets/media/hero-loop-desk.mp4"></video>
       </div>
       <div class="hero__scrim" aria-hidden="true"></div>
     </div>
@@ -55,7 +59,7 @@
     </div>
 
     <aside class="spec" aria-label="House type selector">
-      <div class="spec__art" aria-hidden="true" style="background-image:url('assets/img/wireframe.png')"></div>
+      <div class="spec__art" aria-hidden="true" style="background-image:url('assets/img/wireframe.jpg')"></div>
       <div class="spec__body">
         <p class="spec__label">The range</p>
         <p class="spec__micro">House area</p>

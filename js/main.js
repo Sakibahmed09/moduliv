@@ -28,12 +28,49 @@
     if (e.target.tagName === 'A' && links.classList.contains('is-open')) burger.click();
   });
 
+  /* hero video: the still carries the hero, the loop is an upgrade that
+     only loads once the page is painted and only where it is worth the bytes */
   var heroVideo = document.getElementById('heroVideo');
   if (heroVideo) {
-    heroVideo.addEventListener('playing', function () { heroVideo.classList.add('is-playing'); });
-    heroVideo.addEventListener('error', function () { heroVideo.remove(); }, true);
-    var src = heroVideo.querySelector('source');
-    if (src) src.addEventListener('error', function () { heroVideo.remove(); });
+    var conn = navigator.connection || {};
+    var frugal = conn.saveData === true || /(^|-)2g$/.test(conn.effectiveType || '');
+    // idle without a timeout can be starved forever on a busy phone, which is
+    // exactly how the hero loop ends up never starting on mobile
+    var idle = function (fn) {
+      if (window.requestIdleCallback) return window.requestIdleCallback(fn, { timeout: 1200 });
+      return setTimeout(fn, 600);
+    };
+
+    // reveal on whichever fires first: 'playing' can be skipped on some mobile
+    // engines, 'timeupdate' proves frames are actually flowing
+    var reveal = function () { heroVideo.classList.add('is-playing'); };
+    heroVideo.addEventListener('playing', reveal);
+    heroVideo.addEventListener('timeupdate', reveal, { once: true });
+
+    // a real failure (404, codec) drops the video entirely and leaves the still
+    heroVideo.addEventListener('error', function () {
+      heroVideo.classList.remove('is-playing');
+      heroVideo.removeAttribute('src');
+      heroVideo.load();
+    }, true);
+
+    var startHero = function () {
+      var small = window.matchMedia('(max-width: 720px)').matches;
+      heroVideo.src = heroVideo.dataset[small ? 'mobile' : 'desktop'];
+      heroVideo.load();
+      // the autoplay attribute does the work; this is belt and braces. a rejection
+      // (iOS Low Power Mode) is not an error, we just keep showing the still
+      var p = heroVideo.play();
+      if (p && p.catch) p.catch(function () {});
+    };
+
+    if (reduced || frugal) {
+      heroVideo.remove();
+    } else if (document.readyState === 'complete') {
+      idle(startHero);
+    } else {
+      window.addEventListener('load', function () { idle(startHero); });
+    }
   }
 
   /* ---------- hero house-type spec panel ---------- */
@@ -94,9 +131,11 @@
   STOPS.forEach(function (s, si) {
     s.shots.forEach(function (name, ni) {
       var im = document.createElement('img');
-      im.src = 'assets/img/interiors/' + name + '.jpg';
+      // loading + decoding must be set before src or the browser fetches eagerly
+      im.loading = 'lazy';
+      im.decoding = 'async';
       im.alt = s.room + ', show home photo ' + (ni + 1);
-      im.loading = (si === 0 && ni === 0) ? 'eager' : 'lazy';
+      im.src = 'assets/img/interiors/' + name + '.jpg';
       im.dataset.key = name;
       imgsWrap.appendChild(im);
       imgEls[name] = im;
